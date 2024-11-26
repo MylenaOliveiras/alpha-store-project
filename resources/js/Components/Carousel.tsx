@@ -1,11 +1,21 @@
 import { useState } from "react";
-import { ArrowForwardIos } from "@mui/icons-material";
 import Banner from "@/assets/images/banner1.jpg";
 import Banner2 from "@/assets/images/banner2.jpg";
 import Banner3 from "@/assets/images/banner3.jpg";
+import Slider from "react-slick";
 
 export default function Carousel() {
-    const [currentSlide, setCurrentSlide] = useState(1);
+    var settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        cssEase: "linear",
+        arrows: false,
+    };
 
     const slides = [
         {
@@ -25,43 +35,36 @@ export default function Carousel() {
         },
     ];
 
-    const actualImage = slides.find((slide) => slide.id === currentSlide);
-
-    function nextSlide() {
-        if (currentSlide === slides.length) {
-            setCurrentSlide(1);
-        } else {
-            setCurrentSlide(currentSlide + 1);
-        }
-    }
-
-    function prevSlide() {
-        if (currentSlide === 1) {
-            setCurrentSlide(slides.length);
-        } else {
-            setCurrentSlide(currentSlide - 1);
-        }
-    }
-
     return (
-        <div className="relative mt-60 max-h-40 flex items-center">
-            <button
-                onClick={prevSlide}
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
-            >
-                <ArrowForwardIos className="rotate-180" />
-            </button>
-            <img
-                src={actualImage?.image}
-                alt={actualImage?.content}
-                className="w-full object-cover object-center max-h-96"
-            />
-            <button
-                onClick={nextSlide}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
-            >
-                <ArrowForwardIos />
-            </button>
+        <div className="relative">
+            <Slider {...settings}>
+                {slides.map((slide) => (
+                    <img
+                        key={slide.id}
+                        src={slide.image}
+                        alt={slide.content}
+                        className="w-full object-cover object-center max-h-96 mt-14"
+                    />
+                ))}
+            </Slider>
+            <style>
+                {`
+                .slick-dots {
+                    position: absolute;
+                    bottom: 10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    z-index: 10;
+                }
+                .slick-dots li button:before {
+                    font-size: 12px;
+                    color: white;
+                }
+                .slick-dots li.slick-active button:before {
+                    color: #34c9ff; /* Azul principal */
+                }
+                `}
+            </style>
         </div>
     );
 }

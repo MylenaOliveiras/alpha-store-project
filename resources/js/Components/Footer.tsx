@@ -4,30 +4,44 @@ import mastercard from "@/assets/images/mastercard.svg";
 import boleto from "@/assets/images/boleto.svg";
 import pix from "@/assets/images/pix.svg";
 import ApplicationLogo from "./ApplicationLogo";
+import { Link } from "@inertiajs/react";
+
+export const categories = [
+    { link: "167", nome: "Periféricos" },
+    { link: "168", nome: "Computadores" },
+    { link: "169", nome: "Hardware" },
+    { link: "170", nome: "Monitores" },
+    { link: "171", nome: "Notebooks" },
+    { link: "172", nome: "Rede e Wireless" },
+];
 
 const footerItens = [
     {
         title: "Produtos",
-        items: [
-            "Periféricos",
-            "Computadores",
-            "Hardware",
-            "Monitores",
-            "Notebooks",
-            "Rede e Wireless",
-        ],
+        items: categories,
     },
     {
         title: "Dúvidas",
-        items: ["Entrega", "Garantia", "Como Comprar", "Formas de Pagamento"],
+        items: [
+            { nome: "Entrega", link: "/duvidas" },
+            { nome: "Garantia", link: "/duvidas" },
+            { nome: "Como Comprar", link: "/duvidas" },
+            { nome: "Formas de Pagamento", link: "/duvidas" },
+        ],
     },
     {
         title: "Institucional",
-        items: ["Sobre", "Localização"],
+        items: [
+            { nome: "Sobre", link: "/institucional" },
+            { nome: "Localização", link: "/institucional" },
+        ],
     },
     {
         title: "Ajuda",
-        items: ["SAC", "Política de Privacidade"],
+        items: [
+            { nome: "SAC", link: "/sac" },
+            { nome: "Política de Privacidade", link: "/politicaPrivacidade" },
+        ],
     },
 ];
 
@@ -40,9 +54,19 @@ export default function Footer() {
                     <div key={index} className="flex flex-col gap-1">
                         <h1 className="font-bold">{item.title}</h1>
                         {item.items.map((subItem, subIndex) => (
-                            <a key={subIndex} href="#" className="text-sm">
-                                {subItem}
-                            </a>
+                            <Link
+                                key={subIndex}
+                                href={
+                                    item.title === "Produtos"
+                                        ? `produtos/categoria/${subItem.link}`
+                                        : subItem.link
+                                }
+                                className="text-sm"
+                            >
+                                {typeof subItem === "string"
+                                    ? subItem
+                                    : subItem.nome}
+                            </Link>
                         ))}
                         {item.title === "Ajuda" && (
                             <div className="mt-4">

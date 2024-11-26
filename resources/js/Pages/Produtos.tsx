@@ -1,5 +1,7 @@
 import React from "react";
 import { Inertia } from "@inertiajs/inertia";
+import BaseLayout from "@/Layouts/BaseLayout";
+import { Head } from "@inertiajs/react";
 
 const Produtos = ({ produtos }) => {
     const adicionarAoCarrinho = async (
@@ -16,6 +18,7 @@ const Produtos = ({ produtos }) => {
                 {
                     onSuccess: (page) => {
                         console.log(page.props.carrinho);
+                        Inertia.visit(route("carrinho.index"));
                     },
                 }
             );
@@ -34,7 +37,9 @@ const Produtos = ({ produtos }) => {
     };
 
     return (
-        <div>
+        <BaseLayout>
+            <Head title="Produtos" />
+
             <h2>Produtos Disponíveis</h2>
             {produtos.data.map((produto) => (
                 <div key={produto.id}>
@@ -42,14 +47,14 @@ const Produtos = ({ produtos }) => {
                     <p>Preço: R$ {produto.preco}</p>
                     <button
                         onClick={(event) =>
-                            handleAddToCart(event, produto.id, 2)
+                            handleAddToCart(event, produto.id, 1)
                         }
                     >
                         Adicionar ao Carrinho
                     </button>
                 </div>
             ))}
-        </div>
+        </BaseLayout>
     );
 };
 

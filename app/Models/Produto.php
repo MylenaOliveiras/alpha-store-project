@@ -23,7 +23,7 @@ class Produto extends Model
      public function categoria()
     {
         return $this->belongsTo(ProdutoCategoria::class, 'CATEGORIA_ID', 'CATEGORIA_ID');
-    }
+}
 
     public function carrinho()
     {
