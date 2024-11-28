@@ -58,7 +58,7 @@ export default function Footer() {
                                 key={subIndex}
                                 href={
                                     item.title === "Produtos"
-                                        ? `produtos/categoria/${subItem.link}`
+                                        ? `/produtos/categoria/${subItem.link}`
                                         : subItem.link
                                 }
                                 className="text-sm"

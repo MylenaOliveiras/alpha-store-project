@@ -19,5 +19,17 @@ class User extends Authenticatable
         'USUARIO_EMAIL',
         'USUARIO_CPF',
         'USUARIO_SENHA',
+      
     ];
+
+    protected $hidden = [
+        'USUARIO_SENHA',   
+    ];
+
+    public function getAuthPassword()
+    {
+        return $this->USUARIO_SENHA;
+    }
+
+
 }

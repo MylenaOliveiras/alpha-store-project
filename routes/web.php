@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\PedidoController;
@@ -10,6 +11,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Resources\CategoriaResource;
 use App\Http\Resources\ProdutoResource;
+use App\Models\Carrinho;
 use App\Models\Produto;
 use App\Models\ProdutoCategoria;
 
@@ -27,7 +29,6 @@ Route::get('/', function () {
     ]);
 });
 
-
 Route::get('/duvidas', function () {
     return Inertia::render('Duvidas');
 })->name('duvidas');
@@ -44,7 +45,6 @@ Route::get('/politicaPrivacidade', function () {
     return Inertia::render('PoliticaPrivacidade');
 })->name('politicaPrivacidade');
 
-
 Route::prefix('produtos')->group(function () {
     Route::get('/', [ProdutoController::class, 'index'])->name('produtos.index');
     Route::get('{id}', [ProdutoController::class, 'show'])->name('produtos.show');
@@ -52,18 +52,19 @@ Route::prefix('produtos')->group(function () {
     Route::get('/buscar/{search}', [ProdutoController::class, 'productsBySearch'])->name('produtos.search');
 });
 
+Route::middleware(['auth'])->post('/update-password', [PasswordController::class, 'update']);
+
 Route::get('/finalizarPedido', function () {
     return Inertia::render('FinalizarPedido/Index');
 })->middleware(['auth', 'verified'])->name('finalizarPedido');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', [EnderecoController::class, 'listaEnderecosDashboard'])->name('dashboard');
+    Route::get('/dashboard', [PedidoController::class, 'mostrarDados'])->name('dashboard');
 
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::prefix('dashboard')->group(function () {
+        Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
     Route::prefix('carrinho')->group(function () {
@@ -77,12 +78,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [PedidoController::class, 'index'])->name('pedidos.index');
         Route::post('/finalizar', [PedidoController::class, 'finalizarPedido'])->name('pedidos.finalizar');
         Route::get('/{pedido_id}', [PedidoController::class, 'show'])->name('pedidos.show');
-
     });
 
-
     Route::prefix('finalizarPedido')->group(function () {
-        Route::get('/', [EnderecoController::class, 'listaEnderecos'])->name('finalizarPedido');
+        Route::get('/', [CarrinhoController::class, 'mostrarDados'])->name('finalizarPedido');
         Route::post('/endereco/salvar', [EnderecoController::class, 'salvaEndereco'])->name('finalizarPedido.endereco.salvar');
         Route::delete('/endereco/deletar/{endereco_id}', [EnderecoController::class, 'deletaEndereco'])->name('finalizarPedido.endereco.deletar');
     });

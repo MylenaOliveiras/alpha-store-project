@@ -130,7 +130,7 @@ export default function Carrinho({ carrinho }: ICartItens) {
                                         {formatPrice(totals.frete.toString())}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm text-gray-700 dark:text-cream">
+                                <div className="flex justify-between text-sm text-red-500">
                                     <span>Descontos</span>
                                     <span>
                                         -{" "}

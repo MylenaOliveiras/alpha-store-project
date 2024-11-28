@@ -10,7 +10,7 @@ export default function BaseLayout({
     children: React.ReactNode;
 }) {
     const { props } = usePage();
-    const { auth } = props;
+    const { auth, cartItemsCount } = props;
 
     const [darkMode, setDarkMode] = useState(() => {
         const savedDarkMode = localStorage.getItem("darkMode");
@@ -34,6 +34,7 @@ export default function BaseLayout({
                 setDarkMode={setDarkMode}
                 darkMode={darkMode}
                 userName={userName}
+                cartItems={Number(cartItemsCount) || 0}
             />
             <div className="mt-20 bg-lightSurface dark:bg-darkBackground">
                 {children}

@@ -1,10 +1,16 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EnderecoResource;
+use App\Http\Resources\PedidoResource;
 use Illuminate\Http\Request;
 use App\Models\Carrinho;
+use App\Models\Endereco;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
+use App\Models\Produto;
+use App\Models\Estoque; 
+use App\Models\ProdutoEstoque;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -17,7 +23,6 @@ class PedidoController extends Controller
             $usuario_id = Auth::id();
             $itensCarrinho = Carrinho::where('USUARIO_ID', $usuario_id)->get();
             
-
             if ($itensCarrinho->isEmpty()) {
                 return redirect()->back()->with('error', 'Seu carrinho está vazio.');
             }
@@ -37,6 +42,12 @@ class PedidoController extends Controller
                     'ITEM_PRECO' => $item->produto->PRODUTO_PRECO,
                 ]);
 
+                $estoque = ProdutoEstoque::where('PRODUTO_ID', $item->PRODUTO_ID)->first();
+                if ($estoque) {
+                    $estoque->PRODUTO_QTD -= $item->ITEM_QTD;
+                    $estoque->save();
+                }
+
                 $item->delete();
             }
 
@@ -47,25 +58,35 @@ class PedidoController extends Controller
         }
     }
 
-    public function index()
+    public function mostrarDados()
     {
-        $pedidos = Pedido::with('status')->where('USUARIO_ID', Auth::id())->get();
+        $userId = Auth::id();
 
-        return Inertia::render('Pedidos/Index', [
-            'pedidos' => $pedidos,
+        $pedidos = Pedido::with('status')->where('USUARIO_ID', $userId)->get();
+        $pedidosResource = PedidoResource::collection($pedidos);
+
+        $enderecos = Endereco::where('USUARIO_ID', $userId)->get();
+        $enderecosResource = EnderecoResource::collection($enderecos);
+
+
+
+        return Inertia::render('Dashboard', [
+            'pedidos' => $pedidosResource,
+            'enderecos' => $enderecosResource
         ]);
     }
 
     public function show($pedido_id)
-    {
-        $pedido = Pedido::with('itens.produto')->find($pedido_id);
+{
+    $pedido = Pedido::with(['itens.produto.imagens', 'endereco', 'status'])->find($pedido_id);
 
-        if (!$pedido) {
-            return redirect()->route('pedidos.index')->with('error', 'Pedido não encontrado.');
-        }
-
-        return Inertia::render('Pedidos/Show', [
-            'pedido' => $pedido,
-        ]);
+    if (!$pedido) {
+        return redirect()->route('pedidos.index')->with('error', 'Pedido não encontrado.');
     }
+
+    return Inertia::render('Pedidos/Show', [
+        'pedido' => new PedidoResource($pedido), 
+    ]);
+}
+
 }

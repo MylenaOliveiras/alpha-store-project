@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CarrinhoResource;
+use App\Http\Resources\EnderecoResource;
 use App\Models\Carrinho;
+use App\Models\Endereco;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -53,7 +55,7 @@ class CarrinhoController extends Controller
     public function exibirCarrinho()
     {
         try {
-            $carrinho = Carrinho::with('produto')
+            $carrinho = Carrinho::with(['produto', 'imagens'])
                 ->where('USUARIO_ID', Auth::id())
                 ->get();
 
@@ -108,15 +110,65 @@ class CarrinhoController extends Controller
             $item->ITEM_QTD = $validatedData['quantidade'];
             $item->save();
 
-            return response()->json(['message' => 'Item atualizado com sucesso!'], 200);
+            return redirect()->back()->with('success', 'Item atualizado com sucesso!');
         }
 
-        return response()->json(['error' => 'Item não encontrado.'], 404);
+        return redirect()->back()->with('error', 'Item não encontrado.');
 
     } catch (\Exception $e) {
         Log::error('Erro ao atualizar item no carrinho:', ['error' => $e->getMessage()]);
-        return response()->json(['error' => 'Erro ao atualizar item.'], 500);
+        return redirect()->back()->with('error', 'Erro ao atualizar item.');
     }
 }
 
+public function qtdItens(){
+    $usuario_id = Auth::id();
+    $cartItemsCount = Carrinho::where('USUARIO_ID', $usuario_id)->sum('ITEM_QTD');
+
+    return Inertia::render('BaseLayout', [
+        'auth' => [
+            'user' => $usuario_id,
+        ],
+        'cartItemsCount' => $cartItemsCount,
+    ]);
 }
+
+
+    public function listarResumo(){
+        try {
+            $carrinho = Carrinho::with(['produto', 'imagens'])
+                ->where('USUARIO_ID', Auth::id())
+                ->get();
+
+            return Inertia::render('FinalizarPedido/Index', [
+                'carrinho' => CarrinhoResource::collection($carrinho)
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erro ao exibir carrinho:', ['error' => $e->getMessage()]);
+            return Inertia::render('Carrinho/Resumo', [
+                'message' => 'Erro ao exibir carrinho',
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+
+
+    public function mostrarDados()
+    {
+        $userId = Auth::id();
+
+        $enderecos = Endereco::where('USUARIO_ID', $userId)->get();
+        $enderecosResource = EnderecoResource::collection($enderecos);
+
+        $resumoPedido = Carrinho::with('produto')->where('USUARIO_ID', $userId)->get();
+        $resumoPedidoResource = CarrinhoResource::collection($resumoPedido);
+
+        return Inertia::render('FinalizarPedido/Index', [
+            'enderecos' => $enderecosResource,
+            'resumoPedido' => $resumoPedidoResource,
+        ]);
+    }
+}
+
+    

@@ -41,37 +41,30 @@ class NewPasswordController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Verifique se o usuário existe com o e-mail fornecido
         $user = User::where('USUARIO_EMAIL', $request->email)->first();
 
-        // Se o usuário não for encontrado, lance uma exceção
         if (!$user) {
             throw ValidationException::withMessages([
                 'email' => ['Este e-mail não está registrado.'],
             ]);
         }
 
-        // Aqui tentamos resetar a senha do usuário. Caso seja bem-sucedido, atualizamos a senha no modelo.
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user) use ($request) {
-                // Atualiza a senha e o token de lembrança
                 $user->forceFill([
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
                 ])->save();
 
-                // Dispara o evento de redefinição de senha
                 event(new PasswordReset($user));
             }
         );
 
-        // Se a redefinição for bem-sucedida, redireciona para o login
         if ($status == Password::PASSWORD_RESET) {
             return redirect()->route('login')->with('status', __($status));
         }
 
-        // Se houver um erro na redefinição, lançar uma exceção
         throw ValidationException::withMessages([
             'email' => [trans($status)],
         ]);

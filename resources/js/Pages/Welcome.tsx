@@ -81,45 +81,37 @@ export default function Welcome({ produtos, categorias }: IWelcomeProps) {
                     Descontos imperdíveis em diversos produtos. Não perca!
                 </p>
             </section>
-            <div className="">
-                <div className="flex flex-col gap-6 overflow-x-auto w-full">
-                    {Object.entries(groupedProducts).map(
-                        ([category, products]) => (
-                            <div
-                                key={category}
-                                id={category}
-                                ref={(el) =>
-                                    (containersRef.current[category] = el)
+
+            <div className="flex flex-col gap-6 overflow-x-auto w-full">
+                {Object.entries(groupedProducts).map(([category, products]) => (
+                    <div
+                        key={category}
+                        id={category}
+                        ref={(el) => (containersRef.current[category] = el)}
+                    >
+                        <div className="bg-primary p-3">
+                            <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                                {
+                                    categoriesData?.find(
+                                        (cat) => cat.id === Number(category)
+                                    )?.nome
                                 }
-                            >
-                                <div className="bg-primary p-3">
-                                    <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 lowercase">
-                                        {
-                                            categoriesData?.find(
-                                                (cat) =>
-                                                    cat.id === Number(category)
-                                            )?.nome
-                                        }
-                                    </h1>
-                                </div>
-                                <section className="">
-                                    <ProductCarousel>
-                                        {products.map((produto) => (
-                                            <ProductCard
-                                                key={produto.id}
-                                                produto={produto}
-                                            />
-                                        ))}
-                                    </ProductCarousel>
-                                </section>
-                            </div>
-                        )
-                    )}
-                </div>
+                            </h1>
+                        </div>
+                        <ProductCarousel>
+                            {products.map((produto) => (
+                                <ProductCard
+                                    key={produto.id}
+                                    produto={produto}
+                                />
+                            ))}
+                        </ProductCarousel>
+                    </div>
+                ))}
             </div>
             <section className="flex items-center gap-20 justify-center my-6">
                 <Link href={`produtos/categoria/171`}>
-                    <div className="rounded-md p-10 shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px,rgba(10,37,64,0.35)_0px_-2px_6px_0px_inset] dark:shadow-[rgba(0,0,0,0.5)_0px_50px_100px_-20px,rgba(0,0,0,0.7)_0px_30px_60px_-30px,rgba(0,0,0,0.8)_0px_-2px_6px_0px_inset]">
+                    <div className="rounded-md p-10 shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px,rgba(10,37,64,0.35)_0px_-2px_6px_0px_inset] dark:shadow-[rgba(0,0,0,0.5)_0px_50px_100px_-20px,rgba(0,0,0,0.7)_0px_30px_60px_-30px,rgba(0,0,0,0.8)_0px_-2px_6px_0px_inset] hover:scale-95 transition-transform duration-150 ease-in-out">
                         <span className="text-3xl text-darkSurface dark:text-cream font-extrabold">
                             Notebooks
                         </span>
@@ -127,14 +119,14 @@ export default function Welcome({ produtos, categorias }: IWelcomeProps) {
                 </Link>
 
                 <Link href={`produtos/categoria/170`}>
-                    <div className="rounded-md p-10 shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px,rgba(10,37,64,0.35)_0px_-2px_6px_0px_inset] dark:shadow-[rgba(0,0,0,0.5)_0px_50px_100px_-20px,rgba(0,0,0,0.7)_0px_30px_60px_-30px,rgba(0,0,0,0.8)_0px_-2px_6px_0px_inset]">
+                    <div className="rounded-md p-10 shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px,rgba(10,37,64,0.35)_0px_-2px_6px_0px_inset] dark:shadow-[rgba(0,0,0,0.5)_0px_50px_100px_-20px,rgba(0,0,0,0.7)_0px_30px_60px_-30px,rgba(0,0,0,0.8)_0px_-2px_6px_0px_inset] hover:scale-95 transition-transform duration-150 ease-in-out">
                         <span className="text-3xl text-darkSurface dark:text-cream font-extrabold">
                             Monitores
                         </span>
                     </div>
                 </Link>
                 <Link href={`produtos/categoria/169`}>
-                    <div className="rounded-md p-10 shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px,rgba(10,37,64,0.35)_0px_-2px_6px_0px_inset] dark:shadow-[rgba(0,0,0,0.5)_0px_50px_100px_-20px,rgba(0,0,0,0.7)_0px_30px_60px_-30px,rgba(0,0,0,0.8)_0px_-2px_6px_0px_inset]">
+                    <div className="rounded-md p-10 shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px,rgba(10,37,64,0.35)_0px_-2px_6px_0px_inset] dark:shadow-[rgba(0,0,0,0.5)_0px_50px_100px_-20px,rgba(0,0,0,0.7)_0px_30px_60px_-30px,rgba(0,0,0,0.8)_0px_-2px_6px_0px_inset] hover:scale-95 transition-transform duration-150 ease-in-out">
                         <span className="text-3xl text-darkSurface dark:text-cream font-extrabold">
                             Hardwares
                         </span>

@@ -19,21 +19,21 @@ class Pedido extends Model
 
  public function usuario()
 {
-    return $this->belongsTo('App\Models\Usuario', 'USUARIO_ID', 'USUARIO_ID');
+    return $this->belongsTo(User::class, 'USUARIO_ID', 'USUARIO_ID');
 }
 
     public function endereco()
 {
-    return $this->belongsTo('App\Models\Endereco', 'ENDERECO_ID', 'ENDERECO_ID');
+    return $this->belongsTo(Endereco::class, 'ENDERECO_ID', 'ENDERECO_ID');
 }
 
 public function status()
 {
-    return $this->belongsTo('App\Models\PedidoStatus', 'STATUS_ID', 'STATUS_ID');
+    return $this->belongsTo(PedidoStatus::class, 'STATUS_ID', 'STATUS_ID');
 }
 public function itens()
 {
-    return $this->hasMany('App\Models\PedidoItem', 'PEDIDO_ID', 'PEDIDO_ID');
+    return $this->hasMany(PedidoItem::class, 'PEDIDO_ID', 'PEDIDO_ID');
 }
 
 

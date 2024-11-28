@@ -1,14 +1,12 @@
-import MenuIcon from "@mui/icons-material/Menu";
 import Logo from "@/assets/logo.svg";
 import { Link, useForm } from "@inertiajs/react";
 import TextInput from "./TextInput";
 import SearchIcon from "@mui/icons-material/Search";
 import {
     AccountCircle,
-    FavoriteRounded,
     HelpOutline,
-    Settings,
     ShoppingCart,
+    Dashboard,
 } from "@mui/icons-material";
 import Switch from "./SwitchButton";
 import type { FormEventHandler } from "react";
@@ -17,9 +15,15 @@ interface IHeaderProps {
     darkMode: boolean;
     setDarkMode: (darkMode: boolean) => void;
     userName?: string | null;
+    cartItems: number;
 }
 
-export function Header({ userName, setDarkMode, darkMode }: IHeaderProps) {
+export function Header({
+    userName,
+    setDarkMode,
+    darkMode,
+    cartItems,
+}: IHeaderProps) {
     const { data, setData, get, processing, errors, reset } = useForm({
         search: "",
     });
@@ -102,17 +106,24 @@ export function Header({ userName, setDarkMode, darkMode }: IHeaderProps) {
                             className="text-primary dark:text-gray-200"
                         />
                     </Link>
-                    <Link href={route("dashboard")}>
-                        <Settings
+                    <Link href={route("produtos.index")}>
+                        <Dashboard
                             fontSize="medium"
                             className="text-primary dark:text-gray-200"
                         />
                     </Link>
                     <Link href={route("carrinho.index")}>
-                        <ShoppingCart
-                            fontSize="medium"
-                            className="text-primary dark:text-gray-200"
-                        />
+                        <div className="relative">
+                            <ShoppingCart
+                                fontSize="medium"
+                                className="text-primary dark:text-gray-200"
+                            />
+                            {cartItems > 0 && (
+                                <span className="absolute -top-1 -right-1 dark:bg-primary dark:text-black  bg-darkSurface text-cream rounded-full px-1 text-xs leading-none">
+                                    {cartItems}
+                                </span>
+                            )}
+                        </div>
                     </Link>
                 </div>
             </div>

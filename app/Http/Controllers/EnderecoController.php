@@ -52,19 +52,6 @@ class EnderecoController extends Controller
     }
 
 
-    public function listaEnderecos(){
-        try {
-
-    $enderecos = Endereco::where('USUARIO_ID', Auth::id())->get();
-     return Inertia::render('FinalizarPedido/Index', [
-                'enderecos' => EnderecoResource::collection($enderecos)
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Erro ao listar endereços:', ['error' => $e->getMessage()]);
-            return redirect()->back()->with('error', 'Erro ao listar endereços');
-        }
-    }
 
     public function listaEnderecosDashboard(){
         try {

@@ -49,9 +49,11 @@ export function ProductCard({ produto }: IProductCardProperties) {
                         alt={produto.nome}
                         className="w-60 h-40 object-cover rounded-md"
                     />
-                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
-                        -{formatPrice(produto.desconto.toString())} OFF
-                    </span>
+                    {Number(produto.desconto) > 0 && (
+                        <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
+                            -{formatPrice(produto.desconto.toString())} OFF
+                        </span>
+                    )}
                 </div>
                 <h1 className="text-lg font-semibold text-gray-800 dark:text-gray-200 truncate w-60 px-6">
                     {produto.nome}

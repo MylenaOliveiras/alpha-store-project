@@ -34,3 +34,11 @@ export type ICart = {
     produto: IProduct;
     quantidade: number;
 };
+
+export type IOrder = {
+    id: number;
+    endereco_id: number;
+    usuario_id: number;
+    status_id: number;
+    data: string;
+};

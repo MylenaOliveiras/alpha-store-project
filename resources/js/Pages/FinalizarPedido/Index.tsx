@@ -10,16 +10,23 @@ import {
     LocalShipping,
 } from "@mui/icons-material";
 import { AddressForm } from "@/Components/AddressForm";
-import type { IAddress } from "@/types/global-types";
+import type { IAddress, ICart } from "@/types/global-types";
 import { Inertia } from "@inertiajs/inertia";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { Address } from "./Address";
+import { Steps } from "../Carrinho/components/Steps";
+import { PaymentMethod } from "./PaymentMethod";
+import { ResumoPedido } from "./Resumo";
 
 interface IFinalizarPedidoProps {
     enderecos: { data: IAddress[] };
+    resumoPedido: { data: ICart[] };
 }
 
-export default function FinalizarPedido({ enderecos }: IFinalizarPedidoProps) {
+export default function FinalizarPedido({
+    enderecos,
+    resumoPedido,
+}: IFinalizarPedidoProps) {
     const [etapa, setEtapa] = useState(1);
     const [pagamento, setPagamento] = useState("");
     const [concluido, setConcluido] = useState(false);
@@ -49,74 +56,23 @@ export default function FinalizarPedido({ enderecos }: IFinalizarPedidoProps) {
         );
     };
 
-    console.log(enderecoSelecionado);
+    const findAddress = (id: number) => {
+        return enderecos.data.find((endereco) => endereco.id === id);
+    };
 
     return (
         <BaseLayout>
             <Head title="Finalizar Pedido" />
-            <h1 className="font-bold text-3xl text-center py-6 text-gray-800">
+            <h1 className="font-bold text-3xl text-center py-6 text-gray-800 dark:text-primary-dark">
                 Finalizar Pedido
             </h1>
+            <Steps etapa={etapa} concluido={concluido} />
 
-            <div className="relative mb-8 mx-32">
-                <div className="absolute top-5 w-full h-1 bg-gray-200">
-                    <div
-                        className="h-full bg-primary-light transition-all duration-500"
-                        style={{ width: `${((etapa - 1) / 2) * 100}%` }}
-                    />
-                </div>
-                <div className="relative flex justify-between">
-                    <div className="flex flex-col items-center">
-                        <div
-                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                etapa >= 1
-                                    ? "bg-primary-light text-white"
-                                    : "bg-gray-200"
-                            }`}
-                        >
-                            <LocalShipping className="w-6 h-6" />
-                        </div>
-                        <span className="mt-2 text-sm font-medium">
-                            Entrega
-                        </span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <div
-                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                etapa >= 2
-                                    ? "bg-primary-light text-white"
-                                    : "bg-gray-200"
-                            }`}
-                        >
-                            <CreditCard className="w-6 h-6" />
-                        </div>
-                        <span className="mt-2 text-sm font-medium">
-                            Pagamento
-                        </span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <div
-                            className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                etapa === 3
-                                    ? "bg-primary-light text-white"
-                                    : "bg-gray-200"
-                            }`}
-                        >
-                            {concluido ? (
-                                <CheckCircle className="w-6 h-6" />
-                            ) : (
-                                <Assignment className="w-6 h-6" />
-                            )}
-                        </div>
-                        <span className="mt-2 text-sm font-medium">Resumo</span>
-                    </div>
-                </div>
-            </div>
             <div className="p-6 flex flex-col lg:flex-row gap-8 justify-center">
-                <section className="w-full lg:w-2/3 p-6 bg-white  pt-0">
+                <section className="w-full lg:w-2/3 p-6 bg-white  pt-0 dark:bg-darkBackground">
                     {etapa === 1 && (
                         <div>
-                            <h3 className="text-xl font-semibold mb-4">
+                            <h3 className="text-xl font-semibold mb-4 text-darkSurface dark:text-cream">
                                 Endereço de Entrega
                             </h3>
                             <Address
@@ -130,49 +86,66 @@ export default function FinalizarPedido({ enderecos }: IFinalizarPedidoProps) {
 
                     {etapa === 2 && (
                         <div>
-                            <h3 className="text-xl font-semibold mb-4">
+                            <h3 className="text-xl font-semibold mb-4 text-darkSurface dark:text-cream">
                                 Forma de Pagamento
                             </h3>
-                            <select
-                                value={pagamento}
-                                onChange={(e) => setPagamento(e.target.value)}
-                                className="w-full p-3 mb-4 border rounded-md"
-                            >
-                                <option value="">
-                                    Escolha uma forma de pagamento
-                                </option>
-                                <option value="cartao">
-                                    Cartão de Crédito
-                                </option>
-                                <option value="boleto">Boleto Bancário</option>
-                                <option value="pix">PIX</option>
-                            </select>
-                            <button
+                            <PaymentMethod
+                                setPagamento={setPagamento}
+                                pagamento={pagamento}
+                            />
+                            <PrimaryButton
+                                disabled={pagamento === ""}
                                 onClick={proximaEtapa}
-                                className="mt-4 py-2 px-6 bg-primary-light text-white rounded-md w-full hover:bg-blue-600 transition duration-300"
+                                className="mt-4 py-2 px-6 bg-primary-light text-white rounded-md w-full hover:bg-blue-600 transition duration-300 flex justify-center"
                             >
                                 Próxima Etapa
-                            </button>
+                            </PrimaryButton>
                         </div>
                     )}
 
                     {etapa === 3 && !concluido && (
                         <div>
-                            <h3 className="text-xl font-semibold mb-4">
+                            <h3 className="text-xl font-semibold mb-4 text-darkSurface dark:text-cream">
                                 Resumo do Pedido
                             </h3>
+                            <ResumoPedido carrinho={resumoPedido} />
                             <div className="mb-4">
-                                <p>
-                                    <strong>Endereço:</strong>
+                                <p className="text-darkSurface dark:text-cream">
+                                    <strong>Endereço:</strong>{" "}
+                                    {enderecoSelecionado !== null ? (
+                                        <>
+                                            {
+                                                findAddress(enderecoSelecionado)
+                                                    ?.logradouro
+                                            }
+                                            ,{" "}
+                                            {
+                                                findAddress(enderecoSelecionado)
+                                                    ?.numero
+                                            }
+                                            ,{" "}
+                                            {
+                                                findAddress(enderecoSelecionado)
+                                                    ?.cidade
+                                            }{" "}
+                                            -{" "}
+                                            {
+                                                findAddress(enderecoSelecionado)
+                                                    ?.estado
+                                            }
+                                        </>
+                                    ) : (
+                                        "Nenhum endereço selecionado"
+                                    )}
                                 </p>
-                                <p>
+                                <p className="text-darkSurface dark:text-cream">
                                     <strong>Forma de Pagamento:</strong>{" "}
                                     {pagamento}
                                 </p>
                             </div>
                             <button
                                 onClick={finalizarPedido}
-                                className="py-2 px-6 bg-green-500 text-white rounded-md w-full hover:bg-green-600 transition duration-300"
+                                className="py-2 px-6 bg-green-500 text-white rounded-md w-full hover:bg-green-600 transition duration-300 "
                             >
                                 Finalizar Pedido
                             </button>
@@ -200,10 +173,9 @@ export default function FinalizarPedido({ enderecos }: IFinalizarPedidoProps) {
                         onClick={
                             etapa > 1 ? () => setEtapa(etapa - 1) : undefined
                         }
-                        className="mt-8 text-primary-light cursor-pointer flex items-center gap-2"
+                        className="mt-8 text-darkSurface dark:text-cream cursor-pointer flex items-center gap-2"
                         style={{ display: etapa === 1 ? "none" : "flex" }}
                     >
-                        <ArrowBack />
                         Voltar para{" "}
                         {etapa === 1
                             ? "a loja"

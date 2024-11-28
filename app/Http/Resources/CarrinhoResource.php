@@ -18,7 +18,12 @@ class CarrinhoResource extends JsonResource
         'usuario_id' => $this->USUARIO_ID,
         'produto_id' => $this->PRODUTO_ID,
         'quantidade' => $this->ITEM_QTD,
-        'produto' => new ProdutoResource($this->whenLoaded('produto')), 
+        'produto' => new ProdutoResource($this->whenLoaded('produto')),
+         'imagens' => $this->whenLoaded('imagens', function () {
+                return $this->imagens->map(function ($imagem) {
+                    return $imagem->IMAGEM_URL;
+                });
+            })
     ];
 }
 }

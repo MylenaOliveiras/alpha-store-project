@@ -2,71 +2,48 @@ import BaseLayout from "@/Layouts/BaseLayout";
 import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
 import { PageProps } from "@/types";
-import UpdatePasswordForm from "./Profile/Partials/UpdatePasswordForm";
-import UpdateProfileInformationForm from "./Profile/Partials/UpdateProfileInformationForm";
+import UpdatePasswordForm from "./FinalizarPedido/UpdatePasswordForm";
+import UpdateProfileInformationForm from "./FinalizarPedido/UpdateProfileInformationForm";
+import { Delete } from "@mui/icons-material";
+import { DashboardMenu } from "@/Components/DashboardMenu";
+import type { IAddress } from "@/types/global-types";
+import { formatCep, handleDelete } from "./FinalizarPedido/Address";
+import { AddressForm } from "@/Components/AddressForm";
+import Pedido from "@/Components/Pedido";
 
 export default function Dashboard({
     mustVerifyEmail,
     status,
     enderecos,
-}: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+    pedidos,
+}: PageProps<{
+    mustVerifyEmail: boolean;
+    enderecos: { data: IAddress[] };
+    status?: string;
+}>) {
     const [step, setStep] = useState(1);
-    console.log(enderecos);
+    const [showForm, setShowForm] = useState(false);
+
+    const pedido = pedidos.data.map((p) => {
+        return {
+            ...p,
+            endereco: enderecos.data.find((e) => e.id === p.endereco_id),
+        };
+    });
+
     return (
         <BaseLayout>
             <Head title="Dashboard" />
-            <main className="flex gap-20">
-                <div className="divide-y-2">
-                    <div>
-                        <button
-                            onClick={() => {
-                                setStep(1);
-                            }}
-                        >
-                            Perfil
-                        </button>
-                    </div>
-                    <div>
-                        <button
-                            onClick={() => {
-                                setStep(2);
-                            }}
-                        >
-                            Privacidade e segurança
-                        </button>
-                    </div>
-                    <div>
-                        <button
-                            onClick={() => {
-                                setStep(3);
-                            }}
-                        >
-                            Endereços
-                        </button>
-                    </div>
-                    <div>
-                        <button
-                            onClick={() => {
-                                setStep(4);
-                            }}
-                        >
-                            Pedidos
-                        </button>
-                    </div>
-                    <div>
-                        <Link href={route("logout")} method="post">
-                            Sair
-                        </Link>
-                    </div>
-                </div>
-                <section>
+            <main className="flex gap-20 p-10">
+                <DashboardMenu setStep={setStep} step={step} />
+                <section className="min-w-[600px]">
                     {step === 1 && (
                         <div>
                             <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
                                 <UpdateProfileInformationForm
                                     mustVerifyEmail={mustVerifyEmail}
                                     status={status}
-                                    className="max-w-xl"
+                                    className="w-[600px]"
                                 />
                             </div>
                         </div>
@@ -74,19 +51,58 @@ export default function Dashboard({
                     {step === 2 && (
                         <div>
                             <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                                <UpdatePasswordForm className="max-w-xl" />
+                                <UpdatePasswordForm className="w-[600px]" />
                             </div>
                         </div>
                     )}
-                    {step === 3 && <div></div>}
+                    {step === 3 &&
+                        (showForm ? (
+                            <div>
+                                <AddressForm
+                                    onCancel={() => {
+                                        setShowForm(false);
+                                    }}
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-3">
+                                {enderecos.data.map((e) => {
+                                    return (
+                                        <div className="flex justify-between items-center text-darkSurface dark:text-cream border-2 border-gray-500 rounded-md p-3 space-x-5">
+                                            <span>{e.nome}</span>
+                                            <span>
+                                                {e.logradouro}, {e.numero}
+                                            </span>
+                                            <span>
+                                                {e.cidade} - {e.estado}
+                                            </span>
+                                            <span>{formatCep(e.cep)}</span>
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(e.id)
+                                                }
+                                                className="text-red-500 hover:text-red-700"
+                                            >
+                                                <Delete />
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                                <button
+                                    onClick={() => {
+                                        setShowForm(true);
+                                    }}
+                                    className="dark:text-cream"
+                                >
+                                    Adicionar novo endereço
+                                </button>
+                            </div>
+                        ))}
                     {step === 4 && (
                         <div>
-                            <h1>Pedidos</h1>
-                            <div>
-                                <div>
-                                    <span>Pedidos</span>
-                                </div>
-                            </div>
+                            {pedido.map((e: any) => {
+                                return <Pedido pedido={e} key={e.id} />;
+                            })}
                         </div>
                     )}
                 </section>

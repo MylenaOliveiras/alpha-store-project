@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoriaResource;
 use App\Http\Resources\ProdutoResource;
 use App\Models\Produto;
+use App\Models\ProdutoCategoria;
 use Inertia\Inertia;
 
 class ProdutoController extends Controller
@@ -11,9 +13,11 @@ class ProdutoController extends Controller
     public function index()
     {
         $produtos = Produto::with(['estoque', 'imagens'])->get();
+        $categorias = ProdutoCategoria::all();
 
         return Inertia::render('Produtos', [
-            'produtos' => ProdutoResource::collection($produtos)
+            'produtos' => ProdutoResource::collection($produtos),
+            'categorias' => CategoriaResource::collection($categorias)
         ]);
     }
 
@@ -37,8 +41,11 @@ class ProdutoController extends Controller
             })
             ->get();
 
-        return Inertia::render('ProdutosByCategoria', [
-            'produtos' => ProdutoResource::collection($produtos)
+            $categorias = ProdutoCategoria::where('CATEGORIA_ID', $categoria_id)->get();
+
+       return Inertia::render('Produtos', [
+            'produtos' => ProdutoResource::collection($produtos),
+            'categorias' => CategoriaResource::collection($categorias)
         ]);
     }
 
@@ -47,6 +54,8 @@ class ProdutoController extends Controller
         $produtos = Produto::with(['estoque', 'imagens'])
             ->where('PRODUTO_NOME', 'like', "%$search%")
             ->get();
+
+            $categorias = ProdutoCategoria::whereIn('CATEGORIA_ID', $produtos->pluck('CATEGORIA_ID'))->get();
 
         if ($produtos->isEmpty()) {
             return Inertia::render('Produtos', [
@@ -57,6 +66,7 @@ class ProdutoController extends Controller
 
         return Inertia::render('Produtos', [
             'produtos' => ProdutoResource::collection($produtos),
+            'categorias' => CategoriaResource::collection($categorias)
         ]);
     }
 

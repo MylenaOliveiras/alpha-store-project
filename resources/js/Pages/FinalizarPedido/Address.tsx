@@ -11,8 +11,25 @@ interface IAddressProps {
     };
     proximaEtapa: () => void;
     enderecoSelecionado: number | null;
-    setEnderecoSelecionado: (endereco_id: number) => void;
+    setEnderecoSelecionado: (endereco_id: number | null) => void;
 }
+
+export const formatCep = (cep: string) => {
+    return `${cep.slice(0, 5)}-${cep.slice(5)}`;
+};
+
+export const handleDelete = async (endereco_id: number) => {
+    try {
+        Inertia.delete(`/finalizarPedido/endereco/deletar/${endereco_id}`, {
+            onSuccess: (page) => {
+                console.log("Endereço deletado com sucesso!");
+                Inertia.reload({ preserveState: true });
+            },
+        });
+    } catch (error) {
+        console.error("Erro ao se conectar com o servidor:", error);
+    }
+};
 
 export const Address = ({
     enderecos,
@@ -28,37 +45,20 @@ export const Address = ({
 
     const showOptions = enderecos.data.length > 0 && !showForm;
 
-    const formatCep = (cep: string) => {
-        return `${cep.slice(0, 5)}-${cep.slice(5)}`;
-    };
-
-    const handleDelete = async (endereco_id: number) => {
-        try {
-            Inertia.delete(`/finalizarPedido/endereco/deletar/${endereco_id}`, {
-                onSuccess: (page) => {
-                    console.log("Endereço deletado com sucesso!");
-                    Inertia.reload({ preserveState: true });
-                },
-            });
-        } catch (error) {
-            console.error("Erro ao se conectar com o servidor:", error);
-        }
-    };
-
     return (
         <>
             {showOptions && (
-                <section>
+                <section className="dark:bg-darkBackground">
                     {enderecos.data.map((endereco) => (
                         <div
                             key={endereco.id}
                             className={`border border-gray-200 p-4 rounded-md mb-4 ${
                                 enderecoSelecionado === endereco.id
-                                    ? "bg-blue-100"
+                                    ? "bg-blue-100 dark:bg-gray-700"
                                     : ""
                             }`}
                         >
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center text-darkSurface dark:text-cream">
                                 <input
                                     className="checked:bg-primary-light hover:bg-primary checked:border-transparent rounded-lg"
                                     type="checkbox"
@@ -86,8 +86,13 @@ export const Address = ({
                             </div>
                         </div>
                     ))}
-                    <footer className="flex justify-between">
-                        <button onClick={() => setShowForm(true)}>
+                    <footer className="flex justify-between text-darkSurface dark:text-cream">
+                        <button
+                            onClick={() => {
+                                setShowForm(true);
+                                setEnderecoSelecionado(null);
+                            }}
+                        >
                             Adicionar novo endereco
                         </button>
                         <PrimaryButton
@@ -105,6 +110,7 @@ export const Address = ({
                     handleSubmit={() => {
                         setShowForm(false);
                     }}
+                    onCancel={() => setShowForm(false)}
                 />
             )}
         </>

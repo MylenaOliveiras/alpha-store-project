@@ -29,7 +29,7 @@ export function CartItem({
                 <div className="flex items-center w-96">
                     <img
                         className="w-20 h-20 object-cover rounded-lg"
-                        src={"https://via.placeholder.com/150"}
+                        src={item.imagens[0]}
                         alt="Produto"
                     />
                     <div className="ml-4">
@@ -39,6 +39,14 @@ export function CartItem({
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
                             Unidade:{" "}
                             {formatPrice(item.produto.preco.toString())}
+                            {item.produto.desconto > 0 && (
+                                <span className="ml-2 text-red-500">
+                                    -
+                                    {formatPrice(
+                                        item.produto.desconto.toString()
+                                    )}
+                                </span>
+                            )}
                         </p>
                     </div>
                 </div>
@@ -63,6 +71,18 @@ export function CartItem({
                             <Add />
                         </button>
                     </div>
+                </div>
+
+                <div>
+                    <span className="text-darkSurface dark:text-gray-200 mx-2">
+                        Total:{" "}
+                        {formatPrice(
+                            (
+                                item.produto.preco * item.quantidade -
+                                (item.produto.desconto || 0)
+                            ).toString()
+                        )}
+                    </span>
                 </div>
 
                 <div>

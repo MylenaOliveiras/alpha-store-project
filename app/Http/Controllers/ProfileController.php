@@ -7,7 +7,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,7 +21,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/Edit', [
+        return Inertia::render('dashboard', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
@@ -27,18 +30,27 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+ public function update(ProfileUpdateRequest $request): RedirectResponse
+{
+    $user = $request->user(); 
+   
+    $user->fill([
+        'USUARIO_NOME' => $request->input('USUARIO_NOME'),
+        'USUARIO_EMAIL' => $request->input('USUARIO_EMAIL'),
+    ]);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+    $user->save();
 
-        $request->user()->save();
+    return Redirect::route('dashboard')->with('status', 'Perfil atualizado com sucesso!');
+}
 
-        return Redirect::route('profile.edit');
-    }
+public function updatePassword(Request $request)
+{
+    dd('Chegou na função'); 
+}
+
+
+
 
     /**
      * Delete the user's account.
@@ -60,4 +72,6 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    
 }

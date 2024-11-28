@@ -24,6 +24,11 @@ class Carrinho extends Model
     {
         return $this->belongsTo(Produto::class, 'PRODUTO_ID', 'PRODUTO_ID');
     }
+    
+    public function imagens()
+    {
+        return $this->hasMany(ProdutoImagem::class, 'PRODUTO_ID', 'PRODUTO_ID');
+    }
 
     public function usuario()
     {
@@ -38,4 +43,6 @@ class Carrinho extends Model
 
         return $query;
     }
+
+   
 }
