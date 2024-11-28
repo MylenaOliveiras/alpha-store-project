@@ -1,12 +1,12 @@
 import BaseLayout from "@/Layouts/BaseLayout";
 import { Head, Link } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageProps } from "@/types";
 import UpdatePasswordForm from "./FinalizarPedido/UpdatePasswordForm";
 import UpdateProfileInformationForm from "./FinalizarPedido/UpdateProfileInformationForm";
 import { Delete } from "@mui/icons-material";
 import { DashboardMenu } from "@/Components/DashboardMenu";
-import type { IAddress } from "@/types/global-types";
+import type { IAddress, IOrder } from "@/types/global-types";
 import { formatCep, handleDelete } from "./FinalizarPedido/Address";
 import { AddressForm } from "@/Components/AddressForm";
 import Pedido from "@/Components/Pedido";
@@ -20,6 +20,7 @@ export default function Dashboard({
     mustVerifyEmail: boolean;
     enderecos: { data: IAddress[] };
     status?: string;
+    pedidos: { data: IOrder[] };
 }>) {
     const [step, setStep] = useState(1);
     const [showForm, setShowForm] = useState(false);
@@ -30,6 +31,14 @@ export default function Dashboard({
             endereco: enderecos.data.find((e) => e.id === p.endereco_id),
         };
     });
+
+    useEffect(() => {
+        if (enderecos.data.length === 0) {
+            setShowForm(true);
+        }
+    }, []);
+
+    console.log(pedido);
 
     return (
         <BaseLayout>
@@ -59,6 +68,7 @@ export default function Dashboard({
                         (showForm ? (
                             <div>
                                 <AddressForm
+                                    handleSubmit={() => setShowForm(false)}
                                     onCancel={() => {
                                         setShowForm(false);
                                     }}
@@ -100,9 +110,15 @@ export default function Dashboard({
                         ))}
                     {step === 4 && (
                         <div>
-                            {pedido.map((e: any) => {
-                                return <Pedido pedido={e} key={e.id} />;
-                            })}
+                            {pedido.length > 0 ? (
+                                pedido.map((p) => (
+                                    <Pedido pedido={p} key={p.id} />
+                                ))
+                            ) : (
+                                <div className="text-darkSurface dark:text-cream w-full text-center">
+                                    <span>Ainda não fez nenhum pedido :/</span>
+                                </div>
+                            )}
                         </div>
                     )}
                 </section>

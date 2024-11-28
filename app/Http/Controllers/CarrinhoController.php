@@ -45,7 +45,7 @@ class CarrinhoController extends Controller
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Produto adicionado ao carrinho com sucesso!');
+            return redirect('/carrinho')->with('success', 'Produto adicionado ao carrinho com sucesso!');
         } catch (\Exception $e) {
             Log::error('Erro ao adicionar produto ao carrinho:', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Erro ao adicionar produto ao carrinho');

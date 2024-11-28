@@ -16,7 +16,7 @@ class PedidoStatusResource extends JsonResource
     {
         return [
             'id' => $this->STATUS_ID,
-            'descrição' => $this->STATUS_DESC          
+            'descricao' => $this->STATUS_DESC          
         ];
     }
 }

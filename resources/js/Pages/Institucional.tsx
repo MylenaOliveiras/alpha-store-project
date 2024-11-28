@@ -1,10 +1,12 @@
 import BaseLayout from "@/Layouts/BaseLayout";
 import React from "react";
 import { Group, LockClock, Map, Phone } from "@mui/icons-material";
+import { Head } from "@inertiajs/react";
 
 const Institucional: React.FC = () => {
     return (
         <BaseLayout>
+            <Head title="Institucional" />
             <div className="bg-primary text-white p-10 text-center rounded-lg shadow-lg">
                 <h1 className="text-4xl font-extrabold mb-4">Institucional</h1>
                 <p className="text-lg">
@@ -18,8 +20,8 @@ const Institucional: React.FC = () => {
                         Sobre a ALPHA
                     </h2>
                     <p className="text-lg mb-4 text-gray-700 dark:text-cream">
-                        Bem-vindo à ALPHA, sua loja de hardware especializada em
-                        tecnologia de ponta. Desde nossa fundação, temos o
+                        Bem-vindo à ALPHA, sua loja especializada em hardware de
+                        tecnologia de ponta. Desde a nossa fundação, temos o
                         compromisso de oferecer uma ampla variedade de
                         componentes de alta qualidade para computadores,
                         periféricos e acessórios, atendendo tanto a entusiastas
@@ -29,13 +31,20 @@ const Institucional: React.FC = () => {
                         Nosso objetivo é ser o seu parceiro de confiança em
                         todas as etapas da sua jornada tecnológica. Se você está
                         montando um PC Gamer, atualizando seu setup profissional
-                        ou buscando soluções para melhorar o desempenho dos seus
-                        sistemas, estamos aqui para ajudar.
+                        ou buscando soluções para melhorar o desempenho do seu
+                        sistema, estamos aqui para ajudar. Nossa equipe de
+                        especialistas é apaixonada por tecnologia e está sempre
+                        pronta para oferecer orientações técnicas e
+                        recomendações personalizadas.
                     </p>
                     <p className="text-lg mb-4 text-gray-700 dark:text-cream">
-                        A equipe da ALPHA é formada por especialistas
-                        apaixonados por tecnologia e sempre disposta a oferecer
-                        orientações técnicas e recomendações especializadas.
+                        Na ALPHA, acreditamos que a tecnologia é a chave para um
+                        futuro melhor. Por isso, nos dedicamos a trazer as
+                        últimas novidades do mercado, com produtos inovadores
+                        que entregam desempenho e confiabilidade. Além disso,
+                        nosso compromisso com o atendimento ao cliente é
+                        inigualável. Valorizamos cada interação e trabalhamos
+                        para garantir a melhor qualidade para o nosso cliente.
                     </p>
                 </div>
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Banner from "@/assets/images/banner1.jpg";
-import Banner2 from "@/assets/images/banner2.jpg";
-import Banner3 from "@/assets/images/banner3.jpg";
+import Banner from "@/assets/images/ALPHA.png";
+import Banner2 from "@/assets/images/ALPHA2.png";
+import Banner3 from "@/assets/images/ALPHA3.png";
 import Slider from "react-slick";
 
 export default function Carousel() {

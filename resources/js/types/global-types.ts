@@ -40,5 +40,9 @@ export type IOrder = {
     endereco_id: number;
     usuario_id: number;
     status_id: number;
+    status: {
+        id: number;
+        descricao: string;
+    };
     data: string;
 };

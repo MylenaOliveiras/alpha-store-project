@@ -3,11 +3,11 @@ import { Link } from "@inertiajs/react";
 
 type IPedidoSchema = {
     data: string;
-    endereco: IAddress;
+    endereco: IAddress | undefined;
     id: number;
     status: {
         id: number;
-        descrição: string;
+        descricao: string;
     };
 };
 
@@ -50,7 +50,7 @@ export default function Pedido({ pedido }: IPedido) {
                                 : "bg-gray-100 text-gray-700"
                         }`}
                     >
-                        {pedido.status.descrição}
+                        {pedido.status.descricao}
                     </span>
                 </div>
 
@@ -59,8 +59,8 @@ export default function Pedido({ pedido }: IPedido) {
                         Enviar para:
                     </span>
                     <span className="text-gray-800 dark:text-gray-300">
-                        {pedido.endereco.logradouro}, {pedido.endereco.numero} -{" "}
-                        {pedido.endereco.cidade} - {pedido.endereco.estado}
+                        {pedido.endereco?.logradouro}, {pedido.endereco?.numero}{" "}
+                        - {pedido.endereco?.cidade} - {pedido.endereco?.estado}
                     </span>
                 </div>
 

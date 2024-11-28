@@ -23,7 +23,6 @@ export const handleDelete = async (endereco_id: number) => {
         Inertia.delete(`/finalizarPedido/endereco/deletar/${endereco_id}`, {
             onSuccess: (page) => {
                 console.log("Endereço deletado com sucesso!");
-                Inertia.reload({ preserveState: true });
             },
         });
     } catch (error) {

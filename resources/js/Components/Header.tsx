@@ -53,8 +53,8 @@ export function Header({
                 <img src={Logo} alt="logo" className="h-16" />
             </Link>
             <div className="flex max-h-14 items-center divide-x-2 divide-gray-300">
-                <div className="flex items-center px-3 h-10">
-                    <form onSubmit={submit}>
+                <form onSubmit={submit}>
+                    <div className="flex items-center px-3 h-10">
                         <TextInput
                             name="search-product"
                             className="rounded-e-none bg-slate-400/15"
@@ -62,11 +62,14 @@ export function Header({
                             onChange={(e) => setData("search", e.target.value)}
                             placeholder="Buscar produtos"
                         />
-                    </form>
-                    <div className="content-center px-2 rounded-e-md py-[8.5px] dark:bg-gray-300 bg-primary">
-                        <SearchIcon className="dark:text-darkSurface text-lightSurface" />
+                        <button
+                            type="submit"
+                            className="content-center px-2 rounded-e-md py-[8.5px] dark:bg-gray-300 bg-primary"
+                        >
+                            <SearchIcon className="dark:text-darkSurface text-lightSurface" />
+                        </button>
                     </div>
-                </div>
+                </form>
                 <div className="flex gap-2 items-center px-3 h-10">
                     <Link href={route("dashboard")}>
                         <AccountCircle

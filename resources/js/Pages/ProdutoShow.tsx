@@ -51,7 +51,6 @@ export default function ProdutoShow({ produto }: IProduto) {
                 {
                     onSuccess: (page) => {
                         console.log(page.props.carrinho);
-                        window.location.href = route("carrinho.index");
                     },
                 }
             );
@@ -138,7 +137,7 @@ export default function ProdutoShow({ produto }: IProduto) {
                                 </div>
                             </div>
                             <button
-                                className="flex items-center gap-2 bg-cyan-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-cyan-700 transition-all duration-300 text-center w-40"
+                                className="flex items-center gap-2 bg-cyan-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-cyan-700 transition-all duration-300 text-center w-60"
                                 disabled={produto.data.estoque <= 0}
                                 onClick={(event) =>
                                     handleAddToCart(event, produto.data.id, 1)
@@ -146,7 +145,7 @@ export default function ProdutoShow({ produto }: IProduto) {
                             >
                                 <ShoppingCart />
                                 {produto.data.estoque > 0
-                                    ? "Comprar"
+                                    ? "Adicionar no carrinho"
                                     : "Indisponível"}
                             </button>
                         </div>

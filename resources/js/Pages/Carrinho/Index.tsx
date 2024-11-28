@@ -13,7 +13,7 @@ interface ICartItens {
 }
 
 export default function Carrinho({ carrinho }: ICartItens) {
-    const [cart, setCart] = useState(carrinho.data);
+    const [cart, setCart] = useState<ICart[]>(carrinho.data);
     const [totals, setTotals] = useState({
         subtotal: 0,
         frete: 15.0,
@@ -43,7 +43,8 @@ export default function Carrinho({ carrinho }: ICartItens) {
         try {
             Inertia.delete(`/carrinho/remover/${produto_id}`, {
                 onSuccess: (page) => {
-                    setCart(page.props.carrinho.data);
+                    const carrinho = page.props.carrinho as { data: ICart[] };
+                    setCart(carrinho.data);
                     Inertia.reload({ preserveState: true });
                 },
             });
@@ -64,7 +65,10 @@ export default function Carrinho({ carrinho }: ICartItens) {
                 },
                 {
                     onSuccess: (page) => {
-                        setCart(page.props.carrinho.data);
+                        const carrinho = page.props.carrinho as {
+                            data: ICart[];
+                        };
+                        setCart(carrinho.data);
                         Inertia.reload({ preserveState: true });
                     },
                 }
@@ -77,7 +81,7 @@ export default function Carrinho({ carrinho }: ICartItens) {
     return (
         <BaseLayout>
             <Head title="Carrinho" />
-            <h1 className="font-bold text-3xl pt-6 text-center dark:text-primary-dark text-primary-light">
+            <h1 className="font-bold text-3xl pt-6 text-center text-darkSurface  py-6 bg-primary-dark">
                 Meu Carrinho
             </h1>
             <div className="p-6 flex flex-col lg:flex-row justify-between gap-8">

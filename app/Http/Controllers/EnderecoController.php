@@ -33,7 +33,7 @@ class EnderecoController extends Controller
                 'ENDERECO_ESTADO' => $request->input('estado'),
                 'ENDERECO_NOME' => $request->input('nome'),
             ]);
-            return redirect()->back()->with('success', 'Endereço salvo com sucesso!');
+            return redirect()->with('success', 'Endereço salvo com sucesso!');
         } catch (\Exception $e) {
             Log::error('Erro ao salvar endereço:', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Erro ao salvar endereço');
@@ -44,7 +44,7 @@ class EnderecoController extends Controller
         try {
             $endereco = Endereco::find($endereco_id);
             $endereco->delete();
-            return redirect()->back()->with('success', 'Endereço deletado com sucesso!');
+            return redirect()->with('success', 'Endereço deletado com sucesso!');
         } catch (\Exception $e) {
             Log::error('Erro ao deletar endereço:', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Erro ao deletar endereço');

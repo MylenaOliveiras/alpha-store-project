@@ -1,10 +1,29 @@
 import { formatDate } from "@/Components/Pedido";
 import BaseLayout from "@/Layouts/BaseLayout";
 import { formatPrice } from "@/utils";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { formatCep } from "../FinalizarPedido/Address";
+import type { IAddress, IOrder, IProduct } from "@/types/global-types";
 
-const PedidoDetalhes = ({ pedido }) => {
+type PedidoDetalhes = {
+    id: number;
+    data: string;
+    status: {
+        id: number;
+        descricao: string;
+    };
+    itens: {
+        pedido_id: number;
+        quantidade: number;
+        produto: IProduct;
+    }[];
+    endereco: IAddress;
+};
+interface IPedidoDetalhes {
+    pedido: PedidoDetalhes;
+}
+
+const PedidoDetalhes = ({ pedido }: IPedidoDetalhes) => {
     if (!pedido)
         return (
             <div className="text-center text-xl text-red-500">
@@ -12,11 +31,11 @@ const PedidoDetalhes = ({ pedido }) => {
             </div>
         );
 
-    const priceWithDiscount = (produto) => {
-        return produto.preco - (produto.desconto || 0);
+    const priceWithDiscount = (produto: IProduct) => {
+        return Number(produto.preco) - (Number(produto.desconto) || 0);
     };
 
-    const calcularValorTotal = (itens) => {
+    const calcularValorTotal = (itens: PedidoDetalhes["itens"]) => {
         const totalItens = itens.reduce(
             (total, item) =>
                 total + priceWithDiscount(item.produto) * item.quantidade,
@@ -26,16 +45,17 @@ const PedidoDetalhes = ({ pedido }) => {
         return totalItens + valorFrete;
     };
 
-    const calculateDiscount = (itens) => {
+    const calculateDiscount = (itens: PedidoDetalhes["itens"]) => {
         return itens.reduce(
             (total, item) =>
-                total + (item.produto.desconto || 0) * item.quantidade,
+                total + (Number(item.produto.desconto) || 0) * item.quantidade,
             0
         );
     };
 
     return (
         <BaseLayout>
+            <Head title="Detalhes do Pedido" />
             <div className="container mx-auto p-8">
                 <Link
                     href="/dashboard"
@@ -68,7 +88,7 @@ const PedidoDetalhes = ({ pedido }) => {
                                     : "bg-gray-100 text-gray-700"
                             }`}
                         >
-                            {pedido.status.descrição}
+                            {pedido.status.descricao}
                         </span>
                     </div>
 
@@ -141,7 +161,6 @@ const PedidoDetalhes = ({ pedido }) => {
                                 </p>
                             </div>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white mt-4">
-                                R$
                                 {formatPrice(
                                     calcularValorTotal(pedido.itens).toString()
                                 )}

@@ -51,7 +51,7 @@ class PedidoController extends Controller
                 $item->delete();
             }
 
-            return redirect()->route('pedidos.show', $pedido->id)->with('success', 'Pedido finalizado com sucesso!');
+            return redirect()->route('pedidos.show', $pedido->PEDIDO_ID)->with('success', 'Pedido finalizado com sucesso!');
         } catch (\Exception $e) {
             Log::error('Erro ao finalizar pedido:', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Erro ao finalizar pedido');

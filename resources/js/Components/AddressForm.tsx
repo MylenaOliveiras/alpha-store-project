@@ -4,6 +4,7 @@ import TextInput from "@/Components/TextInput";
 import { useForm } from "@inertiajs/react";
 import PrimaryButton from "./PrimaryButton";
 import type { FormEventHandler } from "react";
+import { Inertia } from "@inertiajs/inertia";
 
 interface IAddressProps {
     handleSubmit?: () => void;
@@ -11,18 +12,38 @@ interface IAddressProps {
 }
 
 export function AddressForm({ handleSubmit, onCancel }: IAddressProps) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        nome: "",
-        logradouro: "",
-        numero: "",
-        complemento: "",
-        cidade: "",
-        estado: "",
-        cep: "",
-    });
+    const { transform, data, setData, post, processing, errors, reset } =
+        useForm({
+            nome: "",
+            logradouro: "",
+            numero: "",
+            complemento: "",
+            cidade: "",
+            estado: "",
+            cep: "",
+        });
+
+    const onChangeCEP = (cep: string) => {
+        cep = cep.replace(/\D/g, "");
+        if (cep.length > 8) {
+            cep = cep.slice(0, 8);
+        }
+
+        if (cep.length === 8) {
+            cep = cep.replace(/(\d{5})(\d{3})/, "$1-$2");
+        }
+
+        setData("cep", cep);
+    };
 
     const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
+
+        transform((data) => ({
+            ...data,
+            cep: data.cep.replace(/\D/g, ""),
+        }));
+
         post(route("finalizarPedido.endereco.salvar"), {
             onSuccess: () => {
                 console.log("Endereço salvo com sucesso!");
@@ -114,7 +135,7 @@ export function AddressForm({ handleSubmit, onCancel }: IAddressProps) {
                         value={data.cep}
                         className="mt-1 block w-full"
                         maxLength={8}
-                        onChange={(e) => setData("cep", e.target.value)}
+                        onChange={(e) => onChangeCEP(e.target.value)}
                         required
                     />
                     <InputError message={errors?.cep} className="mt-2" />

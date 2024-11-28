@@ -47,7 +47,6 @@ export default function FinalizarPedido({
             {
                 onSuccess: () => {
                     setConcluido(true);
-                    Inertia.reload({ preserveState: true });
                 },
                 onError: (errors) => {
                     console.error("Erro ao finalizar pedido:", errors);
